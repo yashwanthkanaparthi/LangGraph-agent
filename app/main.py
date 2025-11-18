@@ -18,11 +18,17 @@ ISSUES = json.load(open(r'mock_data/issues.json'))
 REPLIES = json.load(open(r'mock_data/replies.json'))
 
 
-llm = ChatGroq(
-    model= "llama-3.1-8b-instant",
-    temperature=0.1,
-    api_key=os.getenv("GROQ_API_KEY"),
-)
+llm = None  
+def get_llm():
+    global llm
+    if llm is None:
+        llm = ChatGroq(
+            model="llama-3.1-8b-instant",
+            temperature=0.1,
+            api_key=os.getenv("GROQ_API_KEY"),
+        )
+    return llm
+
 
 
 class TriageState(TypedDict):
@@ -76,8 +82,9 @@ def classify_issue(state: TriageState) -> Dict[str, Any]:
         SystemMessage(content=sys),
         HumanMessage(content=f"TICKET:\n{text}\n\nISSUE_TYPE: {issue_type}"),
     ]
-    raw = llm.invoke(msgs)
+    raw = get_llm().invoke(msgs)
     data = json.loads(raw.content)
+
 
     return {
         "issue_type": issue_type,
