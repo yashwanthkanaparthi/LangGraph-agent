@@ -75,4 +75,11 @@ Images            : {}
 InputFields       : {}
 Links             : {}
 ParsedHtml        : mshtml.HTMLDocumentClass
+
 RawContentLength  : 957
+
+Updated the code with a dummy LLM for the GitHub CI part, because the actual pipeline uses a groq api key to communicate with the model.
+
+# Running tests locally
+From the root folder
+pytest -q
